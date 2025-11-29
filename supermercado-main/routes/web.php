@@ -11,7 +11,7 @@ Route::get('/', function () {
 });
 
 Route::get('/', function () {
-    return redirect('/productos');
+    return redirect('/login');
 });
 
 Route::get('/dashboard', function () {
