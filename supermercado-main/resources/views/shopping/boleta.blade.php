@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Boleta de Compra</title>
+    <title>Nota de Compra</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,17 +40,17 @@
 <body>
     <div class="header">
         <h1>Supermercado</h1>
-        <p>Boleta Electrónica</p>
+        <p>Nota Fiscal Eletrônica</p>
         <p>Cliente: {{ $usuario->nombre }} - {{ $usuario->email }}</p>
-        <p>Fecha: {{ date('d/m/Y H:i') }}</p>
+        <p>Data: {{ date('d/m/Y H:i') }}</p>
     </div>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio</th>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Preço</th>
                 <th>Subtotal</th>
             </tr>
         </thead>
@@ -59,17 +59,17 @@
                 <tr>
                     <td>{{ $item['nombre'] }}</td>
                     <td>{{ $item['cantidad'] }}</td>
-                    <td>S/ {{ number_format($item['precio'], 2) }}</td>
-                    <td>S/ {{ number_format($item['precio'] * $item['cantidad'], 2) }}</td>
+                    <td>R$ {{ number_format($item['precio'], 2, ',', '.') }}</td>
+                    <td>R$ {{ number_format($item['precio'] * $item['cantidad'], 2, ',', '.') }}</td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 
     <div class="footer totales">
-        <p>Subtotal: S/ {{ number_format($subtotal, 2) }}</p>
-        <p>IGV (18%): S/ {{ number_format($igv, 2) }}</p>
-        <p><strong>Total: S/ {{ number_format($total, 2) }}</strong></p>
+        <p>Subtotal: R$ {{ number_format($subtotal, 2, ',', '.') }}</p>
+        <p>Impostos (18%): R$ {{ number_format($igv, 2, ',', '.') }}</p>
+        <p><strong>Total: R$ {{ number_format($total, 2, ',', '.') }}</strong></p>
     </div>
 </body>
 </html>

@@ -2,12 +2,12 @@
     @foreach ($carrito as $id => $item)
         <div class="flex items-center justify-between bg-white rounded-lg shadow-sm p-4 mb-3 border border-blue-100">
             <img src="{{ asset(App\Models\Producto::find($id)?->imagen ?? 'images/default-product.png') }}"
-                 alt="Producto"
+                 alt="Produto"
                  class="w-16 h-16 object-contain rounded border border-gray-200">
 
             <div class="flex-1 mx-4">
                 <p class="font-semibold text-blue-700">{{ $item['nombre'] }}</p>
-                <p class="text-sm text-gray-500">S/ {{ number_format($item['precio'], 2) }} x {{ $item['cantidad'] }}</p>
+                <p class="text-sm text-gray-500">R$ {{ number_format($item['precio'], 2, ',', '.') }} x {{ $item['cantidad'] }}</p>
 
                 <div class="flex items-center gap-2 mt-2">
                     <button onclick="cambiarCantidad(event, {{ $id }}, -1)"
@@ -21,7 +21,7 @@
             </div>
 
             <button onclick="eliminarDelCarrito({{ $id }})"
-                    class="text-gray-400 hover:text-red-600 text-xl" title="Eliminar">
+                    class="text-gray-400 hover:text-red-600 text-xl" title="Remover">
                 🗑️
             </button>
         </div>
@@ -35,14 +35,14 @@
 
     <div class="bg-blue-50 rounded-md p-4 mt-4 text-sm text-gray-700 space-y-1 border border-blue-200">
         <p>
-            Tienes <span class="font-semibold text-blue-600">{{ count($carrito) }}</span> producto{{ count($carrito) > 1 ? 's' : '' }} y
-            <span class="font-semibold text-blue-600">{{ collect($carrito)->sum('cantidad') }}</span> unidad{{ collect($carrito)->sum('cantidad') > 1 ? 'es' : '' }} en total.
+            Você tem <span class="font-semibold text-blue-600">{{ count($carrito) }}</span> produto{{ count($carrito) > 1 ? 's' : '' }} e
+            <span class="font-semibold text-blue-600">{{ collect($carrito)->sum('cantidad') }}</span> unidade{{ collect($carrito)->sum('cantidad') > 1 ? 's' : '' }} no total.
         </p>
-        <p>Subtotal: <span class="font-semibold">S/ {{ number_format($subtotal, 2) }}</span></p>
-        <p>IGV (18%): <span class="font-semibold">S/ {{ number_format($igv, 2) }}</span></p>
-        <p class="text-lg font-bold text-blue-800">Total: S/ {{ number_format($total, 2) }}</p>
+        <p>Subtotal: <span class="font-semibold">R$ {{ number_format($subtotal, 2, ',', '.') }}</span></p>
+        <p>Impostos (18%): <span class="font-semibold">R$ {{ number_format($igv, 2, ',', '.') }}</span></p>
+        <p class="text-lg font-bold text-blue-800">Total: R$ {{ number_format($total, 2, ',', '.') }}</p>
     </div>
     
 @else
-    <p class="text-center text-gray-500 py-6">Tu carrito está vacío.</p>
+    <p class="text-center text-gray-500 py-6">Seu carrinho está vazio.</p>
 @endif
