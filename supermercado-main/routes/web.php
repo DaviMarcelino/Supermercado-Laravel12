@@ -1,67 +1,59 @@
 <?php
-// routes/web.php
-
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductoController;
-use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\CarrinhoController;
 use App\Http\Controllers\ShoppingController;
 use App\Http\Controllers\ProfileController;
 
-// Rota principal - REDIRECIONA PARA LOGIN
-Route::get('/', function () {
-    return redirect('/login');
-});
-
-// Rotas de autenticação (importadas do auth.php) - DEVE VIR PRIMEIRO
+// Rotas de autenticação
 require __DIR__.'/auth.php';
 
-// Rota home alternativa
-Route::get('/home', function () {
-    if (auth()->check()) {
-        return redirect()->route('productos.index');
-    }
-    return redirect('/login');
+// Rota principal - redireciona conforme login
+Route::get('/', function () {
+    return auth()->check() ? redirect()->route('produtos.index') : redirect('/login');
 });
 
-// Dashboard redireciona para produtos
+// Dashboard (redireciona para produtos)
 Route::get('/dashboard', function () {
-    return redirect()->route('productos.index');
+    return redirect()->route('produtos.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Rotas protegidas por auth (TODAS as rotas que precisam de login) - MOVIDO PARA CIMA
+// Rotas PÚBLICAS de produtos - apenas visualizar
+Route::get('/produtos', [ProdutoController::class, 'index'])->name('produtos.index');
+Route::get('/produtos/{id}', [ProdutoController::class, 'show'])->name('produtos.show');
+
+// Rotas que precisam de login
 Route::middleware('auth')->group(function () {
-    // Rotas de ADMIN para produtos (AGORA NO TOPO DO GRUPO PARA PRIORIZAR SOBRE AS GENÉRICAS)
-    Route::get('/productos/create', [ProductoController::class, 'create'])->name('productos.create');
-    Route::post('/productos', [ProductoController::class, 'store'])->name('productos.store');
-    Route::get('/productos/{id}/edit', [ProductoController::class, 'edit'])->name('productos.edit');
-    Route::put('/productos/{id}', [ProductoController::class, 'update'])->name('productos.update');
-    Route::delete('/productos/{id}', [ProductoController::class, 'destroy'])->name('productos.destroy');
-    
-    // Outras rotas do grupo auth
+    // Rotas de administração de produtos
+    Route::get('/produtos/create', [ProdutoController::class, 'create'])->name('produtos.create');
+    Route::post('/produtos', [ProdutoController::class, 'store'])->name('produtos.store');
+    Route::get('/produtos/{id}/edit', [ProdutoController::class, 'edit'])->name('produtos.edit');
+    Route::put('/produtos/{id}', [ProdutoController::class, 'update'])->name('produtos.update');
+    Route::delete('/produtos/{id}', [ProdutoController::class, 'destroy'])->name('produtos.destroy');
+
+    // Rotas de perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Carrinho
+    Route::get('/carrinho', [CarrinhoController::class, 'index'])->name('carrinho.index');
+    Route::post('/carrinho/add/{id}', [CarrinhoController::class, 'add'])->name('carrinho.add');
+    Route::get('/carrinho/remove/{id}', [CarrinhoController::class, 'remove'])->name('carrinho.remove');
+    Route::get('/carrinho/clear', [CarrinhoController::class, 'clear'])->name('carrinho.clear');
+    Route::get('/carrinho/alterar/{id}/{alteracao}', [CarrinhoController::class, 'alterarQuantidade']);
     
-    // Rotas do carrinho
-    Route::post('/carrito/agregar', [CarritoController::class, 'agregar'])->name('carrito.agregar');
-    Route::get('/carrito', [CarritoController::class, 'index'])->name('carrito.index');
-    Route::get('/carrito/add/{id}', [CarritoController::class, 'add'])->name('carrito.add');
-    Route::get('/carrito/remove/{id}', [CarritoController::class, 'remove'])->name('carrito.remove');
-    Route::get('/carrito/clear', [CarritoController::class, 'clear'])->name('carrito.clear');
-    Route::get('/carrito/cambiar/{id}/{cambio}', [CarritoController::class, 'cambiarCantidad']);
-    Route::get('/carrito/contenido', function () {
-        $carrito = session('carrito', []);
-        return response()->json(['productos' => collect($carrito)->map(function ($item, $id) {
-            return array_merge($item, ['id' => $id]);
-        })->values()]);
+    // Rota para obter conteúdo do carrinho via AJAX
+    Route::get('/carrinho/conteudo', function () {
+        $carrinho = session('carrinho', []);
+        return response()->json([
+            'produtos' => collect($carrinho)->map(fn($item, $id) => array_merge($item, ['id' => $id]))->values(),
+            'total' => count($carrinho)
+        ]);
     });
 
     // Shopping
-    Route::get('/shopping/resumen', [ShoppingController::class, 'checkout'])->name('shopping.resumen');
-    Route::post('/shopping/boleta', [ShoppingController::class, 'generarBoleta'])->name('shopping.boleta');
-    Route::get('/shopping/descargar/{filename}', [ShoppingController::class, 'descargarBoleta'])->name('shopping.descargar');
+    Route::get('/shopping/resumo', [ShoppingController::class, 'checkout'])->name('shopping.resumo');
+    Route::post('/shopping/recibo', [ShoppingController::class, 'gerarBoleta'])->name('shopping.recibo');
+    Route::get('/shopping/baixar/{filename}', [ShoppingController::class, 'baixarBoleta'])->name('shopping.baixar');
 });
-
-// Rotas PÚBLICAS (MOVIDAS PARA O FINAL, APÓS O GRUPO AUTH, PARA EVITAR CONFLITOS)
-Route::get('/productos', [ProductoController::class, 'index'])->name('productos.index');
-Route::get('/productos/{id}', [ProductoController::class, 'show'])->name('productos.show');

@@ -6,11 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pedido extends Model
 {
-    protected $fillable = ['total', 'igv', 'subtotal', 'usuario'];
+    protected $fillable = [
+        'total',
+        'imposto',
+        'subtotal',
+        'usuario'
+    ];
 
-    public function detalles()
+    /**
+     * Itens do pedido (antes: detalles)
+     */
+    public function itens()
     {
-        return $this->hasMany(DetallePedido::class);
+        return $this->hasMany(ItemPedido::class);
     }
 }
-

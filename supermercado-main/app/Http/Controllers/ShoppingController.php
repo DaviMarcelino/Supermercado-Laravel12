@@ -4,105 +4,117 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Pedido;
-use App\Models\DetallePedido;
-use Illuminate\Support\Facades\Response;
+use App\Models\DetalhePedido;
 
 class ShoppingController extends Controller
 {
+    // Finalizar compra e gerar PDF para download direto
     public function checkout()
-{
-    $carrito = session()->get('carrito', []);
-    
-    if (empty($carrito)) {
-        return redirect()->route('shopping.index')->with('error', 'El carrito está vacío');
+    {
+        $carrinho = session()->get('carrinho', []);
+
+        if (empty($carrinho)) {
+            return redirect()->route('carrinho.index')->with('error', 'O carrinho está vazio');
+        }
+
+        // Calcular total
+        $subtotal = collect($carrinho)->sum(fn($item) => $item['preco'] * $item['quantidade']);
+        $igv = $subtotal * 0.18;
+        $total = $subtotal + $igv;
+
+        // Obter usuário autenticado
+        $usuario = auth()->user() ?? (object)[
+            'nome' => 'Cliente Convidado',
+            'email' => 'cliente@example.com',
+        ];
+
+        // CORREÇÃO: Alterado de 'recibo.shopping' para 'shopping.recibo'
+        $pdf = Pdf::loadView('shopping.recibo', compact('carrinho', 'subtotal', 'igv', 'total', 'usuario'));
+
+        // Salvar PDF temporariamente
+        $filename = 'recibo_' . now()->format('YmdHis') . '.pdf';
+        $path = storage_path("app/public/{$filename}");
+        
+        // Garantir que o diretório existe
+        if (!file_exists(storage_path('app/public'))) {
+            mkdir(storage_path('app/public'), 0755, true);
+        }
+        
+        $pdf->save($path);
+
+        // Limpar carrinho
+        session()->forget('carrinho');
+
+        // Retornar download direto
+        return response()->download($path, $filename)->deleteFileAfterSend(true);
     }
 
-    // Calcular total
-    $subtotal = collect($carrito)->sum(fn($item) => $item['precio'] * $item['cantidad']);
-    $igv = $subtotal * 0.18;
-    $total = $subtotal + $igv;
+    // Gerar boleta, salvar no banco e mostrar tela de agradecimento
+    public function gerarBoleta(Request $request)
+    {
+        $carrinho = session('carrinho', []);
 
-    // Simulamos datos de usuario
-    $usuario = auth()->user() ?? (object)[
-        'nombre' => 'Cliente Invitado',
-        'email' => 'cliente@example.com',
-    ];
+        if (empty($carrinho)) {
+            return redirect()->route('carrinho.index')->with('error', 'O carrinho está vazio.');
+        }
 
-    $pdf = Pdf::loadView('shopping.boleta', compact('carrito', 'subtotal', 'igv', 'total', 'usuario'));
-    
-    // Guardar PDF temporalmente
-    $filename = 'boleta_' . now()->format('YmdHis') . '.pdf';
-    $path = storage_path("app/public/{$filename}");
-    $pdf->save($path);
+        $subtotal = collect($carrinho)->sum(fn($item) => $item['preco'] * $item['quantidade']);
+        $igv = $subtotal * 0.18;
+        $total = $subtotal + $igv;
 
-    // Borrar carrito
-    session()->forget('carrito');
+        $usuario = auth()->user() ?? (object)[
+            'nome' => 'Convidado',
+            'email' => 'cliente@example.com',
+        ];
 
-    // Retornar descarga directa
-    return response()->download($path)->deleteFileAfterSend(true);
-}
-public function generarBoleta()
-{
-    $carrito = session('carrito', []);
+        // Salvar no banco de dados
+        $pedido = Pedido::create([
+            'usuario' => $usuario->nome ?? 'Convidado',
+            'email' => $usuario->email ?? 'cliente@example.com',
+            'subtotal' => $subtotal,
+            'imposto' => $igv,
+            'total' => $total,
+        ]);
 
-    if (empty($carrito)) {
-        return redirect()->route('shopping.index')->with('error', 'El carrito está vacío.');
+        foreach ($carrinho as $id => $item) {
+            DetalhePedido::create([
+                'pedido_id' => $pedido->id,
+                'produto_id' => $id,
+                'quantidade' => $item['quantidade'],
+                'preco' => $item['preco']
+            ]);
+        }
+
+        // CORREÇÃO: Alterado de 'recibo.shopping' para 'shopping.recibo'
+        $pdf = Pdf::loadView('shopping.recibo', compact('carrinho', 'subtotal', 'igv', 'total', 'usuario'));
+        
+        // Garantir que o diretório existe
+        if (!file_exists(storage_path('app/public/recibos'))) {
+            mkdir(storage_path('app/public/recibos'), 0755, true);
+        }
+        
+        $filename = 'boleta_' . now()->format('YmdHis') . '.pdf';
+        $pdf->save(storage_path("app/public/recibos/{$filename}"));
+
+        // Limpar carrinho
+        session()->forget('carrinho');
+
+        return view('shopping.gracias', compact('filename', 'pedido'));
     }
 
-    $subtotal = collect($carrito)->sum(fn($item) => $item['precio'] * $item['cantidad']);
-    $igv = $subtotal * 0.18;
-    $total = $subtotal + $igv;
+    // Baixar boleta existente
+    public function baixarBoleta($filename)
+    {
+        $path = storage_path("app/public/recibos/{$filename}");
 
-    $usuario = auth()->user() ?? (object)[
-        'nombre' => 'Invitado',
-        'email' => 'cliente@example.com',
-    ];
+        if (!file_exists($path)) {
+            abort(404, 'Recibo não encontrado.');
+        }
 
-    // Guardar en base de datos
-    $pedido = Pedido::create([
-        'usuario' => $usuario->nombre ?? 'Invitado', // o auth()->user()->name
-        'email' => $usuario->email ?? 'cliente@example.com',
-        'subtotal' => $subtotal,
-        'igv' => $igv,
-        'total' => $total,
-    ]);
-    
-
-    foreach ($carrito as $id => $item) {
-        DetallePedido::create([
-            'pedido_id' => $pedido->id,
-            'producto_id' => $id,
-            'cantidad' => $item['cantidad'],
-            'precio' => $item['precio']
+        return response()->download($path, $filename, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
         ]);
     }
-
-    // Generar PDF
-    $pdf = Pdf::loadView('shopping.boleta', compact('carrito', 'subtotal', 'igv', 'total', 'usuario'));
-    $filename = 'boleta_' . now()->format('YmdHis') . '.pdf';
-    $pdf->save(storage_path("app/public/boletas/{$filename}"));
-
-    // Vaciar carrito
-    session()->forget('carrito');
-
-    return view('shopping.gracias', compact('filename'));
-}
-
-
-public function descargarBoleta($filename)
-{
-    $path = storage_path("app/public/boletas/{$filename}");
-
-    if (!file_exists($path)) {
-        abort(404, 'Boleta no encontrada.');
-    }
-
-    return response()->download($path, $filename, [
-        'Content-Type' => 'application/pdf',
-        'Content-Disposition' => 'attachment; filename="'.$filename.'"',
-    ]);
-}
-
 }

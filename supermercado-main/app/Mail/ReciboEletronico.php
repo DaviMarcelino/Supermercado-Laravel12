@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class BoletaElectronica extends Mailable
+class ReciboEletronico extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -27,7 +27,7 @@ class BoletaElectronica extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Boleta Electronica',
+            subject: 'Recibo Eletrônico',
         );
     }
 
@@ -37,7 +37,7 @@ class BoletaElectronica extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.boleta',
+            markdown: 'emails.recibo', // altere também a view
         );
     }
 

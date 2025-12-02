@@ -13,7 +13,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Atributos que podem ser atribuídos em massa.
      *
      * @var list<string>
      */
@@ -25,7 +25,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Atributos que devem ser ocultados ao serializar.
      *
      * @var list<string>
      */
@@ -35,7 +35,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Atributos que devem ser convertidos para tipos específicos.
      *
      * @return array<string, string>
      */
@@ -49,7 +49,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if the user is an administrator.
+     * Verifica se o usuário é administrador.
      *
      * @return bool
      */

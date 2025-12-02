@@ -7,19 +7,19 @@
     <h2 class="text-2xl font-semibold text-blue-600">Resumo da sua compra</h2>
 
     @php
-        $subtotal = collect($carrito)->reduce(fn($s, $item) => $s + $item['precio'] * $item['cantidad'], 0);
+        $subtotal = collect($carrinho)->reduce(fn($s, $item) => $s + $item['preco'] * $item['quantidade'], 0);
         $igv = $subtotal * 0.18;
         $total = $subtotal + $igv;
     @endphp
 
     <div class="divide-y">
-        @foreach($carrito as $item)
+        @foreach($carrinho as $item)
             <div class="py-2 flex justify-between">
                 <div>
-                    <p class="font-semibold">{{ $item['nombre'] }}</p>
-                    <p class="text-sm text-gray-500">R$ {{ number_format($item['precio'], 2, ',', '.') }} x {{ $item['cantidad'] }}</p>
+                    <p class="font-semibold">{{ $item['nome'] }}</p>
+                    <p class="text-sm text-gray-500">R$ {{ number_format($item['preco'], 2, ',', '.') }} x {{ $item['quantidade'] }}</p>
                 </div>
-                <p class="text-sm font-medium">R$ {{ number_format($item['precio'] * $item['cantidad'], 2, ',', '.') }}</p>
+                <p class="text-sm font-medium">R$ {{ number_format($item['preco'] * $item['quantidade'], 2, ',', '.') }}</p>
             </div>
         @endforeach
     </div>
@@ -30,7 +30,7 @@
         <p class="text-lg font-bold text-blue-700">Total: R$ {{ number_format($total, 2, ',', '.') }}</p>
     </div>
 
-    <form action="{{ route('carrito.confirmar') }}" method="POST" class="space-y-4">
+    <form action="{{ route('carrinho.confirmar') }}" method="POST" class="space-y-4">
         @csrf
         <input type="email" name="email" required class="w-full border rounded px-3 py-2" placeholder="E-mail">
         

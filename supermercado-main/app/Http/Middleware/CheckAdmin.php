@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 class CheckAdmin
 {
     /**
-     * Handle an incoming request.
+     * Manipula a requisição antes de chegar ao controller.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
@@ -17,8 +17,11 @@ class CheckAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Verifica se o usuário está logado e se é administrador
         if (!auth()->check() || !auth()->user()->isAdmin()) {
-            return redirect()->route('productos.index')->with('error', 'Acesso não autorizado.');
+            return redirect()
+                ->route('produtos.index')
+                ->with('error', 'Acesso não autorizado.');
         }
 
         return $next($request);

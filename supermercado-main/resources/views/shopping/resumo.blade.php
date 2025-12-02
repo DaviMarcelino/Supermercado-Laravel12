@@ -6,7 +6,7 @@
     <div class="max-w-3xl mx-auto bg-white p-6 rounded shadow-md">
         <h2 class="text-2xl font-bold text-center mb-6">🧾 Resumo da sua Compra</h2>
 
-        @if (!empty($carrito))
+        @if (!empty($carrinho))
             <table class="w-full text-left border-t border-gray-200">
                 <thead class="bg-blue-100">
                     <tr>
@@ -18,23 +18,23 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                    @foreach ($carrito as $id => $item)
+                    @foreach ($carrinho as $id => $item)
                         <tr>
                             <td class="p-2">
-                                <img src="{{ asset(App\Models\Producto::find($id)?->imagen ?? 'images/default-product.png') }}"
+                                <img src="{{ asset(App\Models\Produto::find($id)?->imagem ?? 'images/default-product.png') }}"
                                      class="w-16 h-16 object-contain rounded border">
                             </td>
                             <td class="p-2">{{ $item['nombre'] }}</td>
-                            <td class="p-2 text-center">{{ $item['cantidad'] }}</td>
-                            <td class="p-2 text-right">R$ {{ number_format($item['precio'], 2, ',', '.') }}</td>
-                            <td class="p-2 text-right">R$ {{ number_format($item['precio'] * $item['cantidad'], 2, ',', '.') }}</td>
+                            <td class="p-2 text-center">{{ $item['quantidade'] }}</td>
+                            <td class="p-2 text-right">R$ {{ number_format($item['preco'], 2, ',', '.') }}</td>
+                            <td class="p-2 text-right">R$ {{ number_format($item['preco'] * $item['quantidade'], 2, ',', '.') }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
 
             @php
-                $subtotal = collect($carrito)->reduce(fn($s, $item) => $s + $item['precio'] * $item['cantidad'], 0);
+                $subtotal = collect($carrinho)->reduce(fn($s, $item) => $s + $item['preco'] * $item['quantidade'], 0);
                 $igv = $subtotal * 0.18;
                 $total = $subtotal + $igv;
             @endphp
@@ -46,7 +46,7 @@
             </div>
 
             <div class="mt-6 text-right">
-            <a href="{{ route('shopping.boleta') }}"
+            <a href="{{ route('recibo.shopping') }}"
    class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition shadow">
     Gerar Nota Fiscal
 </a>

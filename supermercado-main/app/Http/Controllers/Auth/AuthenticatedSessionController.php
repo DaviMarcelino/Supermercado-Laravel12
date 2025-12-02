@@ -12,7 +12,7 @@ use Illuminate\View\View;
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
+     * Exibe a página de login.
      */
     public function create(): View
     {
@@ -20,7 +20,7 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Processa o pedido de autenticação.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
@@ -29,11 +29,11 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         // Redireciona para a página de produtos após o login
-        return redirect()->intended(route('productos.index', absolute: false));
+        return redirect()->intended(route('produtos.index', absolute: false));
     }
 
     /**
-     * Destroy an authenticated session.
+     * Encerra a sessão autenticada.
      */
     public function destroy(Request $request): RedirectResponse
     {

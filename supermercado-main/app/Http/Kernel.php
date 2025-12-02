@@ -7,9 +7,9 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 class Kernel extends HttpKernel
 {
     /**
-     * The application's global HTTP middleware stack.
+     * Pilha de middleware HTTP global da aplicação.
      *
-     * These middleware are run during every request to your application.
+     * Esses middleware são executados em toda requisição feita à aplicação.
      *
      * @var array<int, class-string|string>
      */
@@ -24,7 +24,7 @@ class Kernel extends HttpKernel
     ];
 
     /**
-     * The application's route middleware groups.
+     * Grupos de middleware das rotas da aplicação.
      *
      * @var array<string, array<int, class-string|string>>
      */
@@ -40,15 +40,16 @@ class Kernel extends HttpKernel
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
 
     /**
-     * The application's middleware aliases.
+     * Apelidos (aliases) de middleware da aplicação.
      *
-     * Aliases may be used instead of class names to conveniently assign middleware to routes and groups.
+     * Os apelidos podem ser usados no lugar dos nomes completos das classes,
+     * facilitando atribuir middleware às rotas e grupos.
      *
      * @var array<string, class-string|string>
      */

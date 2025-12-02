@@ -6,7 +6,7 @@
     <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
         <h1 class="text-2xl font-bold mb-4">Cadastrar novo produto</h1>
 
-        <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('produtos.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
             @if ($errors->any())
@@ -21,14 +21,14 @@
             @endif
 
             <div class="mb-4">
-                <label for="nombre" class="block font-medium">Nome:</label>
-                <input type="text" name="nombre" id="nombre" required
+                <label for="nome" class="block font-medium">Nome:</label>
+                <input type="text" name="nome" id="nome" required
                     class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300">
             </div>
 
             <div class="mb-4">
-                <label for="precio" class="block font-medium">Preço:</label>
-                <input type="number" name="precio" id="precio" step="0.01" required
+                <label for="preco" class="block font-medium">Preço:</label>
+                <input type="number" name="preco" id="preco" step="0.01" required
                     class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300">
             </div>
 
@@ -39,13 +39,13 @@
             </div>
 
             <div class="mb-4">
-                <label for="imagen" class="block font-medium">Imagem:</label>
-                <input type="file" name="imagen" id="imagen" accept="image/*"
+                <label for="imagem" class="block font-medium">Imagem:</label>
+                <input type="file" name="imagem" id="imagem" accept="image/*"
                     class="w-full border border-gray-300 rounded px-3 py-2 bg-white focus:outline-none focus:ring focus:ring-blue-300">
             </div>
 
             <div class="flex justify-between items-center">
-                <a href="{{ route('productos.index') }}" class="text-blue-600 hover:underline">← Cancelar</a>
+                <a href="{{ route('produtos.index') }}" class="text-blue-600 hover:underline">← Cancelar</a>
                 <button type="submit"
                     class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
                     Salvar
@@ -59,11 +59,11 @@
             const inputImagen = document.getElementById('imagen');
 
             inputImagen.addEventListener('change', function () {
-                const archivo = this.files[0];
+                const arquivo = this.files[0];
 
-                if (archivo && archivo.size > 2 * 1024 * 1024) { // 2MB
+                if (arquivo && arquivo.size > 2 * 1024 * 1024) { // 2MB
                     alert('A imagem não deve ultrapassar 2 MB. Selecione uma imagem mais leve.');
-                    this.value = ''; // limpa o campo para evitar o envio
+                    this.value = '';
                 }
             });
         });

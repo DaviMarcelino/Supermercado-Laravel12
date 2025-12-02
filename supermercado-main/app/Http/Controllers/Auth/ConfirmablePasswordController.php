@@ -12,7 +12,7 @@ use Illuminate\View\View;
 class ConfirmablePasswordController extends Controller
 {
     /**
-     * Show the confirm password view.
+     * Exibe a tela de confirmação de senha.
      */
     public function show(): View
     {
@@ -20,21 +20,24 @@ class ConfirmablePasswordController extends Controller
     }
 
     /**
-     * Confirm the user's password.
+     * Confirma a senha do usuário.
      */
     public function store(Request $request): RedirectResponse
     {
+        // Verifica se a senha informada corresponde ao usuário autenticado
         if (! Auth::guard('web')->validate([
             'email' => $request->user()->email,
             'password' => $request->password,
         ])) {
             throw ValidationException::withMessages([
-                'password' => __('auth.password'),
+                'password' => __('auth.password'), // Mensagem de senha incorreta
             ]);
         }
 
+        // Armazena na sessão o momento em que a senha foi confirmada
         $request->session()->put('auth.password_confirmed_at', time());
 
+        // Redireciona para onde o usuário pretendia ir
         return redirect()->intended(route('dashboard', absolute: false));
     }
 }

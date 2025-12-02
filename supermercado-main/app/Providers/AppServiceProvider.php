@@ -5,11 +5,10 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 
-
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * Registrar quaisquer serviços da aplicação.
      */
     public function register(): void
     {
@@ -17,14 +16,14 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap any application services.
+     * Inicializar quaisquer serviços da aplicação.
      */
     public function boot(): void
     {
         View::composer('*', function ($view) {
-            $carrito = session('carrito', []);
-            $totalProductosUnicos = count($carrito); // 👈 Aquí el cambio
-            $view->with('carritoTotal', $totalProductosUnicos);
+            $carrinho = session('carrinho', []);
+            $totalProdutosUnicos = count($carrinho); // 👈 Aqui está a alteração traduzida
+            $view->with('totalCarrinho', $totalProdutosUnicos);
         });
     }
 }
