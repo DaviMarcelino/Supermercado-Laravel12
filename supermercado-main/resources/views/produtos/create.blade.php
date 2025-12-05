@@ -27,14 +27,20 @@
             </div>
 
             <div class="mb-4">
+                <label for="descricao" class="block font-medium">Descrição:</label>
+                <textarea name="descricao" id="descricao" rows="3"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"></textarea>
+            </div>
+
+            <div class="mb-4">
                 <label for="preco" class="block font-medium">Preço:</label>
                 <input type="number" name="preco" id="preco" step="0.01" required
                     class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300">
             </div>
 
             <div class="mb-4">
-                <label for="stock" class="block font-medium">Estoque:</label>
-                <input type="number" name="stock" id="stock" required
+                <label for="estoque" class="block font-medium">Estoque:</label>
+                <input type="number" name="estoque" id="estoque" required
                     class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300">
             </div>
 
@@ -42,6 +48,7 @@
                 <label for="imagem" class="block font-medium">Imagem:</label>
                 <input type="file" name="imagem" id="imagem" accept="image/*"
                     class="w-full border border-gray-300 rounded px-3 py-2 bg-white focus:outline-none focus:ring focus:ring-blue-300">
+                <p class="text-sm text-gray-500 mt-1">Formatos: JPG, JPEG, PNG, WEBP (máx. 2MB, 500x500px)</p>
             </div>
 
             <div class="flex justify-between items-center">
@@ -56,9 +63,9 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const inputImagen = document.getElementById('imagen');
+            const inputImagem = document.getElementById('imagem');
 
-            inputImagen.addEventListener('change', function () {
+            inputImagem.addEventListener('change', function () {
                 const arquivo = this.files[0];
 
                 if (arquivo && arquivo.size > 2 * 1024 * 1024) { // 2MB

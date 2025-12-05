@@ -65,14 +65,16 @@
                     {{-- Detalhes --}}
                     <div class="text-center">
                         <h3 class="text-sm font-semibold truncate">{{ $produto->nome }}</h3>
-                        <p class="text-xs text-gray-500">Estoque: {{ $produto->stock }}</p>
+                        @if($produto->descricao)
+                            <p class="text-xs text-gray-500 truncate">{{ $produto->descricao }}</p>
+                        @endif
                         <p class="text-red-600 font-bold text-sm">R$ {{ number_format($produto->preco, 2, ',', '.') }}</p>
                     </div>
 
                     {{-- Botões inferiores --}}
                     <div class="mt-4 flex flex-col gap-2">
                         @auth
-                            <a href="javascript:void(0);" onclick="adicionarAoCarrinho({{ $produto->id }})"  {{-- CORRIGIDO: Nome da função alinhado com app.js --}}
+                            <a href="javascript:void(0);" onclick="adicionarAoCarrinho({{ $produto->id }})"
                                class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-3 rounded text-xs sm:text-sm transition text-center w-full">
                                 🛒 Adicionar ao carrinho
                             </a>
@@ -85,7 +87,7 @@
                             @endif
                         @else
                             <a href="{{ route('login') }}"
-                               class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-3 rounded text-xs sm:text-sm transition text-center w-full">
+                               class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-3 rounded text-xs sm:text-base transition text-center w-full">
                                 🔐 Fazer login para comprar
                             </a>
                         @endauth

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Produto;
+use Illuminate\Support\Facades\Storage;
 
 class ProdutoController extends Controller
 {
@@ -26,16 +27,11 @@ class ProdutoController extends Controller
 
     public function store(Request $request)
     {
-        if (!$request->hasFile('imagem') && $request->has('imagem')) {
-            return back()->withErrors(['imagem' => 'A imagem não pôde ser enviada. Verifique que não ultrapassa 2MB.'])
-                         ->withInput();
-        }
-
-        // CORREÇÃO: Validar campo "estoque" em vez de "stock"
+        // Validação
         $request->validate([
             'nome' => 'required|string|max:255',
+            'descricao' => 'nullable|string',
             'preco' => 'required|numeric|min:0',
-            'estoque' => 'required|integer|min:0', // CORREÇÃO: estoque em vez de stock
             'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'imagem.image' => 'O arquivo deve ser uma imagem.',
@@ -43,6 +39,7 @@ class ProdutoController extends Controller
             'imagem.max' => 'A imagem não deve pesar mais de 2MB.',
         ]);
 
+        // Validação de dimensões da imagem
         if ($request->hasFile('imagem')) {
             $imgInfo = getimagesize($request->file('imagem'));
             if ($imgInfo === false) {
@@ -57,16 +54,18 @@ class ProdutoController extends Controller
             }
         }
 
+        // Criar produto
         $produto = new Produto();
         $produto->nome = $request->nome;
+        $produto->descricao = $request->descricao;
         $produto->preco = $request->preco;
-        $produto->estoque = $request->estoque; // CORREÇÃO: estoque em vez de stock
 
+        // Upload da imagem
         if ($request->hasFile('imagem')) {
             $arquivo = $request->file('imagem');
             $nomeArquivo = time() . '_' . $arquivo->getClientOriginalName();
-            $arquivo->move(public_path('imagens'), $nomeArquivo);
-            $produto->imagem = 'imagens/' . $nomeArquivo;
+            $caminho = $arquivo->storeAs('imagens', $nomeArquivo, 'public');
+            $produto->imagem = 'storage/' . $caminho;
         }
 
         $produto->save();
@@ -82,24 +81,19 @@ class ProdutoController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (!$request->hasFile('imagem') && $request->has('imagem')) {
-            return back()->withErrors(['imagem' => 'A imagem não pôde ser enviada. Verifique que não ultrapassa 2MB.'])
-                         ->withInput();
-        }
-
-        // CORREÇÃO: Validar campo "estoque" em vez de "stock"
+        // Validação
         $request->validate([
             'nome' => 'required|string|max:255',
+            'descricao' => 'nullable|string',
             'preco' => 'required|numeric|min:0',
-            'estoque' => 'required|integer|min:0', // CORREÇÃO: estoque em vez de stock
             'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        ],
-        [
+        ], [
             'imagem.image' => 'O arquivo deve ser uma imagem.',
             'imagem.mimes' => 'O formato da imagem deve ser jpg, jpeg, png ou webp.',
             'imagem.max' => 'A imagem não deve pesar mais de 2MB.',
         ]);
 
+        // Validação de dimensões da imagem
         if ($request->hasFile('imagem')) {
             $imgInfo = getimagesize($request->file('imagem'));
             if ($imgInfo === false) {
@@ -116,18 +110,20 @@ class ProdutoController extends Controller
 
         $produto = Produto::findOrFail($id);
         $produto->nome = $request->nome;
+        $produto->descricao = $request->descricao;
         $produto->preco = $request->preco;
-        $produto->estoque = $request->estoque; // CORREÇÃO: estoque em vez de stock
 
+        // Upload da nova imagem (se fornecida)
         if ($request->hasFile('imagem')) {
-            if ($produto->imagem && file_exists(public_path($produto->imagem))) {
-                unlink(public_path($produto->imagem));
+            // Remover imagem antiga se existir
+            if ($produto->imagem && Storage::disk('public')->exists(str_replace('storage/', '', $produto->imagem))) {
+                Storage::disk('public')->delete(str_replace('storage/', '', $produto->imagem));
             }
 
             $arquivo = $request->file('imagem');
             $nomeArquivo = time() . '_' . $arquivo->getClientOriginalName();
-            $arquivo->move(public_path('imagens'), $nomeArquivo);
-            $produto->imagem = 'imagens/' . $nomeArquivo;
+            $caminho = $arquivo->storeAs('imagens', $nomeArquivo, 'public');
+            $produto->imagem = 'storage/' . $caminho;
         }
 
         $produto->save();
@@ -138,6 +134,12 @@ class ProdutoController extends Controller
     public function destroy($id)
     {
         $produto = Produto::findOrFail($id);
+        
+        // Remover imagem se existir
+        if ($produto->imagem && Storage::disk('public')->exists(str_replace('storage/', '', $produto->imagem))) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $produto->imagem));
+        }
+        
         $produto->delete();
 
         return redirect()->route('produtos.index')->with('success', 'Produto excluído com sucesso');

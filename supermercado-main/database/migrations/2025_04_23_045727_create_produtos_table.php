@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('nome');
             $table->text('descricao')->nullable();
             $table->decimal('preco', 8, 2);
-            $table->integer('stock');
             $table->string('imagem')->nullable(); // Caminho ou nome da imagem
             $table->timestamps(); // created_at e updated_at
         });

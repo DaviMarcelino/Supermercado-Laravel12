@@ -28,21 +28,21 @@
         </div>
 
         <div class="mb-4">
+            <label for="descricao" class="block font-medium">Descrição:</label>
+            <textarea name="descricao" id="descricao" rows="3"
+                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300">{{ old('descricao', $produto->descricao) }}</textarea>
+        </div>
+
+        <div class="mb-4">
             <label for="preco" class="block font-medium">Preço:</label>
             <input type="number" name="preco" id="preco" step="0.01" value="{{ old('preco', $produto->preco) }}" required
                 class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300">
         </div>
-
-        <div class="mb-4">
-            <label for="stock" class="block font-medium">Estoque:</label>
-            <input type="number" name="stock" id="stock" value="{{ old('stock', $produto->stock) }}" required
-                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300">
-        </div>
-
         <div class="mb-4">
             <label for="imagem" class="block font-medium">Imagem do produto:</label>
             <input type="file" name="imagem" id="imagem" accept="image/*"
                 class="w-full border border-gray-300 rounded px-3 py-2 bg-white focus:outline-none focus:ring focus:ring-blue-300">
+            <p class="text-sm text-gray-500 mt-1">Deixe em branco para manter a imagem atual</p>
 
             @if ($produto->imagem)
                 <div class="w-full h-40 flex items-center justify-center bg-gray-100 rounded overflow-hidden mb-2">
@@ -63,18 +63,13 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const inputimagem = document.getElementById('imagem');
+        const inputImagem = document.getElementById('imagem');
 
-        inputimagem.addEventListener('change', function () {
-            const archivo = this.files[0];
+        inputImagem.addEventListener('change', function () {
+            const arquivo = this.files[0];
 
-            if (archivo && archivo.size > 2 * 1024 * 1024) { // 2 MB
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Arquivo muito grande',
-                    text: 'A imagem não deve ultrapassar 2 MB. Selecione uma imagem mais leve.',
-                    confirmButtonColor: '#3085d6'
-                });
+            if (arquivo && arquivo.size > 2 * 1024 * 1024) { // 2 MB
+                alert('A imagem não deve ultrapassar 2 MB. Selecione uma imagem mais leve.');
                 this.value = ''; // limpa o campo para evitar o envio
             }
         });

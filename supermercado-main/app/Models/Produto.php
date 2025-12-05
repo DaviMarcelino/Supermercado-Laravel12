@@ -10,7 +10,11 @@ class Produto extends Model
         'nome',
         'descricao',
         'preco',
-        'estoque',
         'imagem'
+    ];
+
+    // Casts para garantir tipos corretos
+    protected $casts = [
+        'preco' => 'decimal:2',
     ];
 }
