@@ -39,12 +39,6 @@
             </div>
 
             <div class="mb-4">
-                <label for="estoque" class="block font-medium">Estoque:</label>
-                <input type="number" name="estoque" id="estoque" required
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300">
-            </div>
-
-            <div class="mb-4">
                 <label for="imagem" class="block font-medium">Imagem:</label>
                 <input type="file" name="imagem" id="imagem" accept="image/*"
                     class="w-full border border-gray-300 rounded px-3 py-2 bg-white focus:outline-none focus:ring focus:ring-blue-300">

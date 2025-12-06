@@ -20,12 +20,17 @@ Route::get('/dashboard', function () {
 
 // Rotas PÚBLICAS de produtos - apenas visualizar
 Route::get('/produtos', [ProdutoController::class, 'index'])->name('produtos.index');
+
+// Mover a rota create PARA FORA do grupo auth OU definir antes da rota com parâmetro
+Route::get('/produtos/create', [ProdutoController::class, 'create'])
+    ->name('produtos.create')
+    ->middleware('auth'); // Adicionar middleware aqui se necessário
+
 Route::get('/produtos/{id}', [ProdutoController::class, 'show'])->name('produtos.show');
 
 // Rotas que precisam de login
 Route::middleware('auth')->group(function () {
-    // Rotas de administração de produtos
-    Route::get('/produtos/create', [ProdutoController::class, 'create'])->name('produtos.create');
+    // Rotas de administração de produtos (restante)
     Route::post('/produtos', [ProdutoController::class, 'store'])->name('produtos.store');
     Route::get('/produtos/{id}/edit', [ProdutoController::class, 'edit'])->name('produtos.edit');
     Route::put('/produtos/{id}', [ProdutoController::class, 'update'])->name('produtos.update');
