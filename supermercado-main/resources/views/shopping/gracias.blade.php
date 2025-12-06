@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="max-w-xl mx-auto text-center bg-white p-6 rounded shadow">
-    <h2 class="text-2xl font-bold mb-4">🎉 Obrigado pela sua compra!</h2>
+    <h2 class="text-2xl font-bold mb-4">Obrigado pela sua compra!</h2>
     <p class="mb-4 text-gray-600">Seu pedido foi registrado com sucesso.</p>
 
     @if(isset($filename))

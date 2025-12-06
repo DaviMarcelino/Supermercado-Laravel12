@@ -41,11 +41,15 @@
             <a href="{{ route('produtos.index') }}" class="hover:underline flex items-center gap-1">📦 Produtos</a>
             <a href="#" onclick="abrirCarrinho()" class="hover:underline flex items-center gap-1 cursor-pointer">
                 🛒 Carrinho 
-                <span id="contador-carrinho" class="bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                    {{ $totalCarrinho ?? 0 }}
-                </span>
             </a>
-            <a href="{{ route('login') }}" class="hover:underline flex items-center gap-1">👤 Minha conta</a>
+            @auth
+                <button @click="menuAberto = true" class="flex items-center gap-1 hover:underline focus:outline-none">
+                    <span>👤</span>
+                    <span>{{ auth()->user()->name ?? 'Usuário' }}</span>
+                </button>
+            @else
+                <a href="{{ route('login') }}" class="hover:underline flex items-center gap-1">👤 Entrar</a>
+            @endauth
         </nav>
     </div>
 </header>
@@ -100,10 +104,49 @@
     class="fixed inset-y-0 left-0 w-64 bg-white shadow-2xl z-50 p-6 space-y-4 flex flex-col rounded-r-2xl"
     style="display: none;"
 >
-    <button @click="menuAberto = false" class="text-right text-gray-500 hover:text-gray-800">✖</button>
-    <a href="#" class="text-blue-700 font-semibold hover:underline text-lg">📈 Relatórios</a>
-    <a href="#" class="text-blue-700 font-semibold hover:underline text-lg">💵 Minhas Vendas</a>
-    <a href="{{ route('produtos.index') }}" class="text-blue-700 font-semibold hover:underline text-lg">📦 Produtos</a>
+    <button @click="menuAberto = false" class="text-right text-gray-500 hover:text-gray-800 mb-4">✖ Fechar</button>
+    
+    @auth
+        <div class="mb-4 p-3 bg-blue-50 rounded-lg">
+            <p class="text-lg font-semibold text-blue-800">{{ auth()->user()->name ?? 'Usuário' }}</p>
+            <p class="text-sm text-blue-600">{{ auth()->user()->email ?? '' }}</p>
+        </div>
+    @endauth
+    
+    <div class="space-y-2">
+        <a href="{{ route('produtos.index') }}" 
+           @click="menuAberto = false"
+           class="block text-blue-700 hover:bg-blue-50 hover:text-blue-800 font-semibold p-3 rounded-lg text-lg flex items-center gap-3">
+            <span class="text-xl">📦</span> Produtos
+        </a>
+        
+        <a href="#" 
+           onclick="abrirCarrinho(); menuAberto = false;" 
+           class="block text-green-700 hover:bg-green-50 hover:text-green-800 font-semibold p-3 rounded-lg text-lg flex items-center gap-3 cursor-pointer">
+            <span class="text-xl">🛒</span> Carrinho
+        </a>
+    </div>
+    
+    @auth
+        <div class="mt-6 pt-4 border-t border-gray-200">
+            <form method="POST" action="{{ route('logout') }}" id="sidebar-logout-form">
+                @csrf
+                <button type="submit" 
+                        @click="menuAberto = false"
+                        class="w-full text-left text-red-600 hover:bg-red-50 hover:text-red-700 font-semibold p-3 rounded-lg text-lg flex items-center gap-3">
+                    <span class="text-xl">🚪</span> Sair
+                </button>
+            </form>
+        </div>
+    @else
+        <div class="mt-6 pt-4 border-t border-gray-200">
+            <a href="{{ route('login') }}" 
+               @click="menuAberto = false"
+               class="block text-blue-700 hover:bg-blue-50 hover:text-blue-800 font-semibold p-3 rounded-lg text-lg flex items-center gap-3">
+                <span class="text-xl">👤</span> Entrar
+            </a>
+        </div>
+    @endauth
 </div>
 
 </body>

@@ -67,12 +67,24 @@ class ProdutoController extends Controller
         $produto->descricao = $request->descricao;
         $produto->preco = $request->preco;
 
-        // Upload da imagem
+        // Upload da imagem - SALVAR NO CAMINHO ESPECÍFICO
         if ($request->hasFile('imagem')) {
             $arquivo = $request->file('imagem');
             $nomeArquivo = time() . '_' . $arquivo->getClientOriginalName();
-            $caminho = $arquivo->storeAs('imagens', $nomeArquivo, 'public');
-            $produto->imagem = 'storage/' . $caminho;
+            
+            // Caminho específico onde a imagem será salva
+            $caminhoDestino = 'C:\Users\lesam\Documentos\Supermercado-Laravel12\supermercado-main\public\imagens';
+            
+            // Garantir que o diretório existe
+            if (!file_exists($caminhoDestino)) {
+                mkdir($caminhoDestino, 0755, true);
+            }
+            
+            // Mover o arquivo para o diretório específico
+            $arquivo->move($caminhoDestino, $nomeArquivo);
+            
+            // Salvar o caminho relativo no banco de dados
+            $produto->imagem = 'imagens/' . $nomeArquivo;
         }
 
         $produto->save();
@@ -127,15 +139,27 @@ class ProdutoController extends Controller
 
         // Upload da nova imagem (se fornecida)
         if ($request->hasFile('imagem')) {
+            // Caminho específico onde as imagens são salvas
+            $caminhoDestino = 'C:\Users\lesam\Documentos\Supermercado-Laravel12\supermercado-main\public\imagens';
+            
             // Remover imagem antiga se existir
-            if ($produto->imagem && Storage::disk('public')->exists(str_replace('storage/', '', $produto->imagem))) {
-                Storage::disk('public')->delete(str_replace('storage/', '', $produto->imagem));
+            if ($produto->imagem && file_exists(public_path($produto->imagem))) {
+                unlink(public_path($produto->imagem));
             }
 
             $arquivo = $request->file('imagem');
             $nomeArquivo = time() . '_' . $arquivo->getClientOriginalName();
-            $caminho = $arquivo->storeAs('imagens', $nomeArquivo, 'public');
-            $produto->imagem = 'storage/' . $caminho;
+            
+            // Garantir que o diretório existe
+            if (!file_exists($caminhoDestino)) {
+                mkdir($caminhoDestino, 0755, true);
+            }
+            
+            // Mover o arquivo para o diretório específico
+            $arquivo->move($caminhoDestino, $nomeArquivo);
+            
+            // Salvar o caminho relativo no banco de dados
+            $produto->imagem = 'imagens/' . $nomeArquivo;
         }
 
         $produto->save();
@@ -147,9 +171,9 @@ class ProdutoController extends Controller
     {
         $produto = Produto::findOrFail($id);
         
-        // Remover imagem se existir
-        if ($produto->imagem && Storage::disk('public')->exists(str_replace('storage/', '', $produto->imagem))) {
-            Storage::disk('public')->delete(str_replace('storage/', '', $produto->imagem));
+        // Remover imagem se existir (do caminho específico)
+        if ($produto->imagem && file_exists(public_path($produto->imagem))) {
+            unlink(public_path($produto->imagem));
         }
         
         $produto->delete();
