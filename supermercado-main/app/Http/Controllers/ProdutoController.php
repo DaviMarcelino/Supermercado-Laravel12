@@ -32,14 +32,14 @@ class ProdutoController extends Controller
             'nome' => 'required|string|max:255',
             'descricao' => 'nullable|string',
             'preco' => 'required|numeric|min:0',
-            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,gif,bmp|max:10240', // 10MB e sem WEBP
         ], [
             'imagem.image' => 'O arquivo deve ser uma imagem.',
-            'imagem.mimes' => 'O formato da imagem deve ser jpg, jpeg, png ou webp.',
-            'imagem.max' => 'A imagem não deve pesar mais de 2MB.',
+            'imagem.mimes' => 'O formato da imagem deve ser jpg, jpeg, png, gif ou bmp.',
+            'imagem.max' => 'A imagem não deve pesar mais de 10MB.',
         ]);
 
-        // Validação de dimensões da imagem
+        // Validação de dimensões da imagem (aumentado para 4000x4000 pixels)
         if ($request->hasFile('imagem')) {
             $imgInfo = getimagesize($request->file('imagem'));
             if ($imgInfo === false) {
@@ -48,9 +48,16 @@ class ProdutoController extends Controller
 
             $largura = $imgInfo[0];
             $altura = $imgInfo[1];
+            $tamanhoMB = $request->file('imagem')->getSize() / 1048576; // Convertendo bytes para MB
 
-            if ($largura > 500 || $altura > 500) {
-                return back()->withErrors(['imagem' => 'A imagem deve ter no máximo 500x500 pixels.'])->withInput();
+            // Limite de 4000x4000 pixels
+            if ($largura > 4000 || $altura > 4000) {
+                return back()->withErrors(['imagem' => 'A imagem deve ter no máximo 4000x4000 pixels.'])->withInput();
+            }
+
+            // Verificação adicional do tamanho do arquivo (já validado pelo Laravel, mas garantindo)
+            if ($tamanhoMB > 10) {
+                return back()->withErrors(['imagem' => 'A imagem não deve pesar mais de 10MB.'])->withInput();
             }
         }
 
@@ -86,14 +93,14 @@ class ProdutoController extends Controller
             'nome' => 'required|string|max:255',
             'descricao' => 'nullable|string',
             'preco' => 'required|numeric|min:0',
-            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,gif,bmp|max:10240', // 10MB e sem WEBP
         ], [
             'imagem.image' => 'O arquivo deve ser uma imagem.',
-            'imagem.mimes' => 'O formato da imagem deve ser jpg, jpeg, png ou webp.',
-            'imagem.max' => 'A imagem não deve pesar mais de 2MB.',
+            'imagem.mimes' => 'O formato da imagem deve ser jpg, jpeg, png, gif ou bmp.',
+            'imagem.max' => 'A imagem não deve pesar mais de 10MB.',
         ]);
 
-        // Validação de dimensões da imagem
+        // Validação de dimensões da imagem (aumentado para 4000x4000 pixels)
         if ($request->hasFile('imagem')) {
             $imgInfo = getimagesize($request->file('imagem'));
             if ($imgInfo === false) {
@@ -102,9 +109,14 @@ class ProdutoController extends Controller
 
             $largura = $imgInfo[0];
             $altura = $imgInfo[1];
+            $tamanhoMB = $request->file('imagem')->getSize() / 1048576;
 
-            if ($largura > 500 || $altura > 500) {
-                return back()->withErrors(['imagem' => 'A imagem deve ter no máximo 500x500 pixels.'])->withInput();
+            if ($largura > 4000 || $altura > 4000) {
+                return back()->withErrors(['imagem' => 'A imagem deve ter no máximo 4000x4000 pixels.'])->withInput();
+            }
+
+            if ($tamanhoMB > 10) {
+                return back()->withErrors(['imagem' => 'A imagem não deve pesar mais de 10MB.'])->withInput();
             }
         }
 
