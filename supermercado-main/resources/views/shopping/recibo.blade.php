@@ -95,12 +95,5 @@
         <p><strong>Impostos (18%):</strong> R$ {{ number_format($igv, 2, ',', '.') }}</p>
         <p class="grand-total"><strong>TOTAL:</strong> R$ {{ number_format($total, 2, ',', '.') }}</p>
     </div>
-
-    <div style="text-align: center; margin-top: 30px; color: #666; font-size: 10px; border-top: 1px dashed #ccc; padding-top: 10px;">
-        <p>Obrigado pela sua compra! 🎉</p>
-        <p>Supermercado Laravel - Rua Virtual, 123 - Centro</p>
-        <p>CNPJ: 12.345.678/0001-99 | Telefone: (11) 9999-9999</p>
-        <p>Esta nota fiscal foi gerada automaticamente pelo sistema.</p>
-    </div>
 </body>
 </html>
