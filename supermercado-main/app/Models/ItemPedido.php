@@ -13,17 +13,11 @@ class ItemPedido extends Model
         'preco'
     ];
 
-    /**
-     * Relacionamento com Pedido
-     */
     public function pedido()
     {
         return $this->belongsTo(Pedido::class);
     }
 
-    /**
-     * Relacionamento com Produto
-     */
     public function produto()
     {
         return $this->belongsTo(Produto::class);

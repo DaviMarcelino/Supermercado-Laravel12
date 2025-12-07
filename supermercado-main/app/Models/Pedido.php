@@ -13,9 +13,6 @@ class Pedido extends Model
         'usuario'
     ];
 
-    /**
-     * Itens do pedido (antes: detalles)
-     */
     public function itens()
     {
         return $this->hasMany(ItemPedido::class);

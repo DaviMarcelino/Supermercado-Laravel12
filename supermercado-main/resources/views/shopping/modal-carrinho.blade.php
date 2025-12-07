@@ -4,7 +4,6 @@
 
         <h2 class="text-lg font-bold mb-4">🛒 Seu Carrinho</h2>
 
-        <!-- Spinner -->
         <div id="loading-spinner" class="text-center py-6 hidden">
             <svg class="animate-spin h-6 w-6 text-green-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -15,7 +14,6 @@
 
         <div id="conteudo-carrinho"></div>
 
-        <!-- Botões -->
         <div class="mt-6 flex justify-end gap-3">
             <button onclick="confirmarEsvaziarCarrinho()"
                     class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium shadow-md transition">

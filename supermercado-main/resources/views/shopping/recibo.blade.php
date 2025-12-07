@@ -12,12 +12,12 @@
         .header {
             text-align: center;
             margin-bottom: 20px;
-            border-bottom: 1px solid #22c55e; /* VERDE */
+            border-bottom: 1px solid #22c55e;
             padding-bottom: 15px;
         }
         .header h1 {
             margin: 0;
-            color: #22c55e; /* VERDE */
+            color: #22c55e;
         }
         .table {
             width: 100%;
@@ -30,7 +30,7 @@
             text-align: center;
         }
         .table th {
-            background-color: #22c55e; /* VERDE */
+            background-color: #22c55e;
             color: white;
         }
         .footer {

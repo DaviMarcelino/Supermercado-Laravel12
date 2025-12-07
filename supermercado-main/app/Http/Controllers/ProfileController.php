@@ -11,9 +11,6 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    /**
-     * Exibir o formulário de perfil do usuário.
-     */
     public function edit(Request $request): View
     {
         return view('profile.edit', [
@@ -21,14 +18,10 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Atualizar as informações do perfil do usuário.
-     */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
 
-        // Se o e-mail foi alterado, reseta a verificação
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
@@ -38,9 +31,6 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'perfil-atualizado');
     }
 
-    /**
-     * Excluir a conta do usuário.
-     */
     public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [

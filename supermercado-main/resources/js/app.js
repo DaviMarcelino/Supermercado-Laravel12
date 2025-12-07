@@ -1,14 +1,10 @@
-// resources/js/app.js
-
 import './bootstrap';
 import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 Alpine.start();
 
-// Funções personalizadas para o carrinho
 document.addEventListener('DOMContentLoaded', () => {
-    // Mostrar spinner
     function mostrarSpinner() {
         const spinner = document.getElementById('spinner-global');
         if (spinner) {
@@ -16,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Ocultar spinner
     function ocultarSpinner() {
         const spinner = document.getElementById('spinner-global');
         if (spinner) {
@@ -44,13 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
             ocultarSpinner();
 
             if (data.message === 'Adicionado com sucesso') {
-                // Atualizar contador no header
                 const contador = document.getElementById('contador-carrinho');
                 if (contador) {
                     contador.textContent = data.total;
                 }
                 
-                // Mostrar mensagem de sucesso
                 alert('Produto adicionado ao carrinho!');
             } else {
                 alert('Erro: ' + data.message);
@@ -120,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(() => {
             ocultarSpinner();
-            abrirCarrinho(); // Recarrega o conteúdo atualizado
+            abrirCarrinho();
         })
         .catch(err => {
             ocultarSpinner();
@@ -145,9 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(res => res.json())
         .then(data => {
             ocultarSpinner();
-            abrirCarrinho(); // Recarregar modal
+            abrirCarrinho();
             
-            // Atualizar contador no header
             const contador = document.getElementById('contador-carrinho');
             if (contador) {
                 contador.textContent = data.total || 0;
@@ -174,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Quando clicar em "Sim, esvaziar"
     document.addEventListener('click', function (event) {
         if (event.target && event.target.id === 'confirmar-esvaziar-btn') {
             mostrarSpinner();
@@ -191,11 +182,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 fecharModalConfirmacao();
                 fecharCarrinho();
                 
-                // Atualizar contador
                 const contador = document.getElementById('contador-carrinho');
                 if (contador) contador.textContent = data.total || '0';
                 
-                // Recarregar página para atualizar estado
                 location.reload();
             })
             .catch(err => {

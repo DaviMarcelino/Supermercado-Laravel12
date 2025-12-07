@@ -68,9 +68,9 @@
         inputImagem.addEventListener('change', function () {
             const arquivo = this.files[0];
 
-            if (arquivo && arquivo.size > 2 * 1024 * 1024) { // 2 MB
+            if (arquivo && arquivo.size > 2 * 1024 * 1024) { 
                 alert('A imagem não deve ultrapassar 2 MB. Selecione uma imagem mais leve.');
-                this.value = ''; // limpa o campo para evitar o envio
+                this.value = ''; 
             }
         });
     });

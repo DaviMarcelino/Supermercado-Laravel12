@@ -13,7 +13,6 @@ class Produto extends Model
         'imagem'
     ];
 
-    // Casts para garantir tipos corretos
     protected $casts = [
         'preco' => 'decimal:2',
     ];
