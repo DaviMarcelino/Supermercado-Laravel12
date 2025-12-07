@@ -7,9 +7,7 @@
     <h2 class="text-2xl font-semibold text-blue-600">Resumo da sua compra</h2>
 
     @php
-        $subtotal = collect($carrinho)->reduce(fn($s, $item) => $s + $item['preco'] * $item['quantidade'], 0);
-        $igv = $subtotal * 0.18;
-        $total = $subtotal + $igv;
+        $total = collect($carrinho)->reduce(fn($s, $item) => $s + $item['preco'] * $item['quantidade'], 0);
     @endphp
 
     <div class="divide-y">
@@ -25,8 +23,6 @@
     </div>
 
     <div class="border-t pt-4 text-right space-y-1 text-sm">
-        <p>Subtotal: <span class="font-semibold">R$ {{ number_format($subtotal, 2, ',', '.') }}</span></p>
-        <p>Impostos (18%): <span class="font-semibold">R$ {{ number_format($igv, 2, ',', '.') }}</span></p>
         <p class="text-lg font-bold text-blue-700">Total: R$ {{ number_format($total, 2, ',', '.') }}</p>
     </div>
 

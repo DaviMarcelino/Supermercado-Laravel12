@@ -18,7 +18,6 @@ class CarrinhoController extends Controller
         $this->carrinho = $carrinho;
     }
 
-    // Mostrar o carrinho
     public function index()
     {
         $carrinho = $this->carrinho->obter();
@@ -30,11 +29,10 @@ class CarrinhoController extends Controller
         return redirect()->route('produtos.index');
     }
 
-    // Adicionar produto ao carrinho
     public function add($id)
     {
         try {
-            $carrinho = $this->carrinho->adicionar($id); // CORREÇÃO: Método correto é "adicionar"
+            $carrinho = $this->carrinho->adicionar($id);
             $total = count($carrinho);
 
             return response()->json([
@@ -47,7 +45,6 @@ class CarrinhoController extends Controller
         }
     }
 
-    // Alterar quantidade
     public function alterarQuantidade($id, $alteracao)
     {
         $carrinho = session()->get('carrinho', []);
@@ -65,7 +62,6 @@ class CarrinhoController extends Controller
         return response()->json(['success' => true, 'carrinho' => $carrinho]);
     }
 
-    // Remover item do carrinho
     public function remove($id)
     {
         $this->carrinho->remover($id);
@@ -82,7 +78,6 @@ class CarrinhoController extends Controller
         return redirect()->route('carrinho.index')->with('success', 'Produto removido');
     }
 
-    // Esvaziar carrinho
     public function clear()
     {
         $this->carrinho->esvaziar();
@@ -98,7 +93,6 @@ class CarrinhoController extends Controller
         return redirect()->route('carrinho.index')->with('success', 'Carrinho esvaziado');
     }
 
-    // Finalizar pedido
     public function checkout()
     {
         $carrinho = $this->carrinho->obter();
@@ -109,10 +103,8 @@ class CarrinhoController extends Controller
 
         $total = collect($carrinho)->sum(fn($item) => $item['preco'] * $item['quantidade']);
 
-        // Criar pedido
         $pedido = Pedido::create(['total' => $total]);
 
-        // Criar detalhes do pedido
         foreach ($carrinho as $id => $item) {
             DetalhePedido::create([
                 'pedido_id'   => $pedido->id,
@@ -122,13 +114,11 @@ class CarrinhoController extends Controller
             ]);
         }
 
-        // Esvaziar carrinho
         $this->carrinho->esvaziar();
 
         return redirect()->route('produtos.index')->with('success', 'Pedido realizado com sucesso');
     }
 
-    // Enviar recibo por e-mail
     public function confirmar(Request $request)
     {
         $carrinho = session('carrinho', []);
@@ -138,7 +128,6 @@ class CarrinhoController extends Controller
             return redirect()->route('carrinho.index')->with('error', 'O carrinho está vazio');
         }
 
-        // CORREÇÃO: Verificar se a classe de email existe
         if (class_exists(\App\Mail\ReciboEletronico::class)) {
             Mail::to($email)->send(new \App\Mail\ReciboEletronico($carrinho));
         }

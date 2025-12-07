@@ -29,13 +29,6 @@
             <button @click="menuAberto = true" class="text-2xl focus:outline-none">☰</button>
             <span class="text-xl font-bold flex items-center gap-2">🛒 Supermercado</span>
         </div>
-
-        <!-- Parte central: Buscador -->
-        <div class="hidden md:block flex-1 mx-6">
-            <input type="text" placeholder="Buscar produtos"
-                class="px-3 py-1 w-full rounded-full text-black focus:outline-none focus:ring focus:ring-blue-200">
-        </div>
-
         <!-- Parte direita: Links -->
         <nav class="flex items-center gap-6 text-sm">
             <a href="{{ route('produtos.index') }}" class="hover:underline flex items-center gap-1">📦 Produtos</a>

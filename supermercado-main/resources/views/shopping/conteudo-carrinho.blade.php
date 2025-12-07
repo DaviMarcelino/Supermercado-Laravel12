@@ -20,7 +20,7 @@
                 </div>
             </div>
 
-            <button onclick="removerDoCarrinho({{ $id }})"  {{-- CORRIGIDO: Nome da função alinhado com app.js --}}
+            <button onclick="removerDoCarrinho({{ $id }})"
                     class="text-gray-400 hover:text-red-600 text-xl" title="Remover">
                 🗑️
             </button>
@@ -28,9 +28,7 @@
     @endforeach
 
     @php
-        $subtotal = collect($carrinho)->reduce(fn($s, $item) => $s + $item['preco'] * $item['quantidade'], 0);
-        $igv = $subtotal * 0.18;
-        $total = $subtotal + $igv;
+        $total = collect($carrinho)->reduce(fn($s, $item) => $s + $item['preco'] * $item['quantidade'], 0);
     @endphp
 
     <div class="bg-blue-50 rounded-md p-4 mt-4 text-sm text-gray-700 space-y-1 border border-blue-200">
@@ -38,8 +36,6 @@
             Você tem <span class="font-semibold text-blue-600">{{ count($carrinho) }}</span> produto{{ count($carrinho) > 1 ? 's' : '' }} e
             <span class="font-semibold text-blue-600">{{ collect($carrinho)->sum('quantidade') }}</span> unidade{{ collect($carrinho)->sum('quantidade') > 1 ? 's' : '' }} no total.
         </p>
-        <p>Subtotal: <span class="font-semibold">R$ {{ number_format($subtotal, 2, ',', '.') }}</span></p>
-        <p>Impostos (18%): <span class="font-semibold">R$ {{ number_format($igv, 2, ',', '.') }}</span></p>
         <p class="text-lg font-bold text-blue-800">Total: R$ {{ number_format($total, 2, ',', '.') }}</p>
     </div>
     

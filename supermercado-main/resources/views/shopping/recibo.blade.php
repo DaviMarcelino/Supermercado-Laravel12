@@ -58,7 +58,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>🛒 Supermercado</h1>
+        <h1>Supermercado</h1>
         <p>Nota Fiscal Eletrônica</p>
     </div>
 
@@ -66,7 +66,6 @@
         <p><strong>Cliente:</strong> {{ $usuario->name ?? $usuario->nome ?? 'Cliente' }}</p>
         <p><strong>Email:</strong> {{ $usuario->email ?? 'cliente@email.com' }}</p>
         <p><strong>Data:</strong> {{ date('d/m/Y H:i') }}</p>
-        <p><strong>Número do Pedido:</strong> #{{ rand(1000, 9999) }}-{{ date('Ymd') }}</p>
     </div>
 
     <table class="table">
@@ -88,11 +87,15 @@
                 </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" style="text-align: right; font-weight: bold;">TOTAL:</td>
+                <td style="font-weight: bold;">R$ {{ number_format($total, 2, ',', '.') }}</td>
+            </tr>
+        </tfoot>
     </table>
 
     <div class="footer totales">
-        <p><strong>Subtotal:</strong> R$ {{ number_format($subtotal, 2, ',', '.') }}</p>
-        <p><strong>Impostos (18%):</strong> R$ {{ number_format($igv, 2, ',', '.') }}</p>
         <p class="grand-total"><strong>TOTAL:</strong> R$ {{ number_format($total, 2, ',', '.') }}</p>
     </div>
 </body>
