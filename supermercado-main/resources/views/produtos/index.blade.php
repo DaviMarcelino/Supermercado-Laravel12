@@ -10,7 +10,7 @@
         @auth
             @if(auth()->user()->isAdmin())
                 <a href="{{ route('produtos.create') }}" 
-                   class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition w-auto text-sm sm:text-base">
+                   class="bg-blue-300 text-gray-800 px-4 py-2 rounded hover:bg-blue-400 transition w-auto text-sm sm:text-base font-semibold">
                     ➕ Adicionar Produto
                 </a>
             @endif
@@ -35,6 +35,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         @foreach ($produtos as $produto)
             <div class="relative bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+
                 {{-- Botão Excluir (apenas para admin) --}}
                 @auth
                     @if(auth()->user()->isAdmin())
@@ -52,6 +53,7 @@
                 @endauth
 
                 <div class="p-2">
+
                     {{-- Imagem --}}
                     @if ($produto->imagem)
                         <img src="{{ asset($produto->imagem) }}" alt="{{ $produto->nome }}"
@@ -71,20 +73,25 @@
                         <p class="text-red-600 font-bold text-sm">R$ {{ number_format($produto->preco, 2, ',', '.') }}</p>
                     </div>
 
-                    {{-- Botões inferiores --}}
+                    {{-- Botões --}}
                     <div class="mt-4 flex flex-col gap-2">
                         @auth
-                            <a href="javascript:void(0);" onclick="adicionarAoCarrinho({{ $produto->id }})"
-                               class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-3 rounded text-xs sm:text-sm transition text-center w-full">
+
+                            {{-- ADICIONAR AO CARRINHO = VERDE CLARO --}}
+                            <a href="javascript:void(0);" 
+                               onclick="adicionarAoCarrinho({{ $produto->id }})"
+                               class="bg-green-300 hover:bg-green-400 text-gray-800 py-2 px-3 rounded text-xs sm:text-sm transition text-center w-full font-semibold">
                                 🛒 Adicionar ao carrinho
                             </a>
 
                             @if(auth()->user()->isAdmin())
+                                {{-- EDITAR = AMARELO CLARO --}}
                                 <a href="{{ route('produtos.edit', $produto->id) }}"
-                                   class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded text-xs sm:text-sm transition text-center w-full">
+                                   class="bg-yellow-200 hover:bg-yellow-300 text-gray-800 py-2 px-3 rounded text-xs sm:text-sm transition text-center w-full font-semibold">
                                     ✏️ Editar
                                 </a>
                             @endif
+
                         @else
                             <a href="{{ route('login') }}"
                                class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-3 rounded text-xs sm:text-base transition text-center w-full">
@@ -92,6 +99,7 @@
                             </a>
                         @endauth
                     </div>
+
                 </div>
             </div>
         @endforeach

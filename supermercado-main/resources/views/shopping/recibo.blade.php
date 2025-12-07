@@ -12,12 +12,12 @@
         .header {
             text-align: center;
             margin-bottom: 20px;
-            border-bottom: 1px solid #3b82f6;
+            border-bottom: 1px solid #22c55e; /* VERDE */
             padding-bottom: 15px;
         }
         .header h1 {
             margin: 0;
-            color: #3b82f6;
+            color: #22c55e; /* VERDE */
         }
         .table {
             width: 100%;
@@ -30,7 +30,7 @@
             text-align: center;
         }
         .table th {
-            background-color: #3b82f6;
+            background-color: #22c55e; /* VERDE */
             color: white;
         }
         .footer {
@@ -46,7 +46,7 @@
         .grand-total {
             font-size: 14px;
             font-weight: bold;
-            color: #3b82f6;
+            color: #22c55e; /* VERDE */
         }
         .customer-info {
             margin-bottom: 15px;
